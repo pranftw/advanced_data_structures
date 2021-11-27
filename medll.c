@@ -62,6 +62,37 @@ node* insert_rear(node *start, int data){
     return start;
 }
 
+node* delete(node* start, int idx){
+    node* ptr = start;
+    node *prev = NULL;
+    node* next;
+    int i=0;
+    while(ptr!=NULL){
+        next = get_next(ptr, prev);
+        if(i==idx){
+            if(prev!=NULL){
+                node* prev_prev = get_prev(prev,ptr);
+                prev->link = XOR(prev_prev,next);
+            }
+            if(next!=NULL){
+                node* next_next = get_next(next,ptr);
+                next->link = XOR(prev,next_next);
+            }
+            free(ptr);
+            if(prev==NULL){
+                return next;
+            }
+            else{
+                return start;
+            }
+        }
+        i++;
+        prev = ptr;
+        ptr = next;
+    }
+    return start;
+}
+
 void print_ll(node *start){
     node *ptr = start;
     node *prev = NULL;
@@ -103,5 +134,7 @@ int main(){
     start = insert_front(start, 4);
     start = insert_rear(start, 5);
     print_ll(start);
-    print_ll_backwards(start);
+    start = delete(start,4);
+    print_ll(start);
+    // print_ll_backwards(start);
 }

@@ -4,6 +4,7 @@
 
 struct node{
     int data;
+    int level;
     struct node *next;
     struct node *down;
 };
@@ -89,6 +90,34 @@ node* search_levels(int data, int max_level, node* arr[]){
 //For deletion, make a search, get the pointer, delete the ptr element and for next
 //element, go to "down" of ptr and keep going until ptr==NULL
 
+node* delete(node* search_ptr, node* arr[]){
+    node* ptr = arr[search_ptr->level];
+    node* prev = NULL;
+    while(ptr!=NULL){
+        if(ptr==search_ptr){
+            if(prev!=NULL){
+                prev->next = ptr->next;
+            }
+            else{
+                arr[search_ptr->level] = ptr->next;
+            }
+            return ptr->down;
+        }
+        prev = ptr;
+        ptr = ptr->next;
+    }
+    return ptr->down;
+}
+
+node* delete_levels(int max_levels, node* arr[], int data){
+    node* search_ptr = search_levels(data, max_levels, arr);
+    node* ptr = search_ptr;
+    while(ptr!=NULL){
+        ptr = delete(ptr,arr);
+    }
+    return *arr;
+}
+
 node* insert_levels(int max_levels, node *arr[], int data){
     node *start;
     node *x;
@@ -99,6 +128,7 @@ node* insert_levels(int max_levels, node *arr[], int data){
         if(rand_val>=0.5 || i==0){
             x = new_node();
             x->down = prev;
+            x->level = i;
             start = arr[i];
             start = insert(x, start, data);
             arr[i] = start;
@@ -139,6 +169,9 @@ int main(){
     else{
         printf("True");
     }
+    print_all_levels(max_levels,arr);
+
+    *arr = delete_levels(max_levels, arr, 2);
     print_all_levels(max_levels,arr);
     return 0;
 }
