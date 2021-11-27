@@ -5,3 +5,4 @@ selfoll.c -> Self Organizing Linked List<br>
 skipll.c -> Skip Linked List<br>
 unrll.c -> Unrolled Linked List<br>
 disjset.c -> Disjoint Sets (Island counter)<br>
+dict.c -> Dictionary or Hash Table<br>
