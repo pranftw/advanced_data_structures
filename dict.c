@@ -45,6 +45,16 @@ node* search(char key[], int table_len, node* table[]){
     return ptr; //Returns the pointer with the key else returns null
 }
 
+int get_data(char key[], int table_len, node* table[]){
+    node* search_ptr = search(key,table_len,table);
+    if(search_ptr!=NULL){
+        return search_ptr->data;
+    }
+    else{
+        return NULL;
+    }
+}
+
 node* insert(int data, char key[], node* table[], int table_len){
     node* search_ptr = search(key,table_len,table);
     if(search_ptr!=NULL){
@@ -105,8 +115,15 @@ int main(){
     *table = insert(3,"World",table,table_len);
     *table = insert(5,"Boo",table,table_len); // These two
     *table = insert(6,"Cno",table,table_len); // are to check collisions
-    print_ll(table, table_len);
+    // print_ll(table, table_len);
     *table = delete("Foo",table_len,table);
-    print_ll(table, table_len);
+    // print_ll(table, table_len);
+    int d = get_data("Roo",table_len,table);
+    if(d==NULL){
+        printf("NULL\n");
+    }
+    else{
+        printf("%d\n",d);
+    }
     return 0;
 }
