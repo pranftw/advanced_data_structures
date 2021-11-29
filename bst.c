@@ -129,11 +129,9 @@ node* delete(node* root, int data){
 }
 
 void print_bst(node* root){ //prints inorder of the tree, to visualize construct one in https://yongdanielliang.github.io/animation/web/BST.html
-    if(root->left!=NULL){
+    if(root!=NULL){
         print_bst(root->left);
-    }
-    printf("%d ",root->data);
-    if(root->right!=NULL){
+        printf("%d ",root->data);
         print_bst(root->right);
     }
 }
