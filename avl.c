@@ -38,6 +38,13 @@ int diff(node* node_ptr){
     return (right_height-left_height);
 }
 
+node* find_min(node* root){
+    if(root->left==NULL){
+        return root;
+    }
+    return find_min(root->left);
+}
+
 node* rotate_right(node* root, node* node_ptr){
     node* y = node_ptr;
     node* x = node_ptr->left;
@@ -137,12 +144,73 @@ node* insert(node* root, int data){
 }
 
 node* delete_bst(node* root, int data){
-
+    node* ptr = root;
+    node* prev = NULL;
+    node* temp;
+    while(ptr!=NULL){
+        temp = ptr;
+        if(ptr->data==data){
+            if(ptr->left==NULL && ptr->right==NULL){
+                if(prev!=NULL){
+                    if(prev->right==ptr){
+                        prev->right = NULL;
+                    }
+                    else{
+                        prev->left = NULL;
+                    }
+                }
+                else{
+                    return NULL;
+                }
+            }
+            else if(ptr->left==NULL){
+                if(prev!=NULL){
+                    if(prev->right==ptr){
+                        prev->right = ptr->right;
+                    }
+                    else{
+                        prev->left = ptr->right;
+                    }
+                }
+                else{
+                    return ptr->right;
+                }
+            }
+            else if(ptr->right==NULL){
+                if(prev!=NULL){
+                    if(prev->right==ptr){
+                        prev->right = ptr->left;
+                    }
+                    else{
+                        prev->left = ptr->left;
+                    }
+                }
+                else{
+                    return ptr->left;
+                }
+            }
+            else{
+                node* min_val = find_min(ptr->right);
+                ptr->data = min_val->data;
+                root = delete_bst(root,min_val->data);
+            }
+            return root;
+        }
+        else if(data>ptr->data){
+            ptr = ptr->right;
+        }
+        else{
+            ptr = ptr->left;
+        }
+        prev = temp;
+    }
+    return root;
 }
 
 node* delete(node* root, int data){
     // Call to delete_bst
     // Call to balance
+
 }
 
 void print_avl(node* root){
