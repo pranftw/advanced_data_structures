@@ -25,16 +25,19 @@ int get_max(int a, int b){
 }
 
 int calc_height(node* node_ptr){
-    if(ptr==NULL){
+    if(node_ptr==NULL){
         return 0;
     }
-    int max_val = get_max(calc_height(ptr->left),calc_height(ptr->right));
+    int max_val = get_max(calc_height(node_ptr->left),calc_height(node_ptr->right));
     return (1 + max_val);
 }
 
 int diff(node* node_ptr){
-    int left_height = calc_height(ptr->left);
-    int right_height = calc_height(ptr->right);
+    if(node_ptr==NULL){
+        return 0;
+    }
+    int left_height = calc_height(node_ptr->left);
+    int right_height = calc_height(node_ptr->right);
     return (right_height-left_height);
 }
 
@@ -81,18 +84,18 @@ node* balance(node* root, node* node_ptr){
     node* ptr = node_ptr;
     while(ptr!=NULL){ // Keeps balancing until the parent is null(root)
         if(diff(ptr)<0 && diff(ptr->left)<0){ // Both are left heavy
-            root = rotate_right(ptr);
+            root = rotate_right(root,ptr);
         }
         else if(diff(ptr)>0 && diff(ptr->right)>0){ // Both are right heavy
-            root = rotate_left(ptr);
+            root = rotate_left(root,ptr);
         }
         else if(diff(ptr)<0 && diff(ptr->left)>0){ // One is left heavy and other is right heavy
-            root = rotate_left(ptr->left);
-            root = rotate_right(ptr);
+            root = rotate_left(root,ptr->left);
+            root = rotate_right(root,ptr);
         }
         else if(diff(ptr)>0 && diff(ptr->right)<0){ // One is right heavy and other is left heavy
-            root = rotate_right(ptr->right);
-            root = rotate_left(ptr);
+            root = rotate_right(root,ptr->right);
+            root = rotate_left(root,ptr);
         }
         ptr = ptr->parent;
     }
@@ -139,11 +142,11 @@ node* insert(node* root, int data){
     node* x = new_node();
     x->data = data;
     root = insert_bst(root, x);
-    root = balance(root, x);
+    // root = balance(root, x);
     return root;
 }
 
-node* delete_bst(node* root, int data){
+node* delete(node* root, int data){
     node* ptr = root;
     node* prev = NULL;
     node* temp;
@@ -165,6 +168,7 @@ node* delete_bst(node* root, int data){
             }
             else if(ptr->left==NULL){
                 if(prev!=NULL){
+                    ptr->right->parent = prev;
                     if(prev->right==ptr){
                         prev->right = ptr->right;
                     }
@@ -173,11 +177,13 @@ node* delete_bst(node* root, int data){
                     }
                 }
                 else{
+                    ptr->right->parent = NULL;
                     return ptr->right;
                 }
             }
             else if(ptr->right==NULL){
                 if(prev!=NULL){
+                    ptr->left->parent = prev;
                     if(prev->right==ptr){
                         prev->right = ptr->left;
                     }
@@ -186,14 +192,16 @@ node* delete_bst(node* root, int data){
                     }
                 }
                 else{
+                    ptr->left->parent = NULL;
                     return ptr->left;
                 }
             }
             else{
                 node* min_val = find_min(ptr->right);
                 ptr->data = min_val->data;
-                root = delete_bst(root,min_val->data);
+                root = delete(root,min_val->data);
             }
+            root = balance(root,ptr->parent);
             return root;
         }
         else if(data>ptr->data){
@@ -207,12 +215,6 @@ node* delete_bst(node* root, int data){
     return root;
 }
 
-node* delete(node* root, int data){
-    // Call to delete_bst
-    // Call to balance
-
-}
-
 void print_avl(node* root){
     if(root!=NULL){
         print_avl(root->left);
@@ -223,5 +225,10 @@ void print_avl(node* root){
 
 int main(){
     node* root = NULL;
+    root = insert(root,10);
+    root = insert(root,8);
+    root = insert(root,15);
+    root = insert(root,6);
+    print_avl(root);
     return 0;
 }
