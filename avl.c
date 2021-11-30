@@ -56,8 +56,10 @@ node* rotate_right(node* root, node* node_ptr){
     x->parent = y->parent;
     x->right = y;
     y->parent = x;
-    y->left = b;
-    b->parent = y;
+		y->left = b;
+		if(b!=NULL){
+    	b->parent = y;
+		}
     if(x->parent==NULL){
         return x;
     }
@@ -72,8 +74,10 @@ node* rotate_left(node* root, node* node_ptr){
     y->parent = x->parent;
     y->left = x;
     x->parent = y;
-    x->right = b;
-    b->parent = x;
+		x->right = b;
+		if(b!=NULL){
+    	b->parent = x;
+		}
     if(y->parent==NULL){
         return y;
     }
@@ -105,7 +109,7 @@ node* balance(node* root, node* node_ptr){
 node* insert_bst(node* root, node* x){
     node* ptr = root;
     while(ptr!=NULL){
-        if(ptr->data>x->data){
+        if(x->data>ptr->data){
             if(ptr->right==NULL){
                 ptr->right = x;
                 x->parent = ptr;
@@ -142,7 +146,7 @@ node* insert(node* root, int data){
     node* x = new_node();
     x->data = data;
     root = insert_bst(root, x);
-    // root = balance(root, x);
+    root = balance(root, x);
     return root;
 }
 
