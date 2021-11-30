@@ -7,3 +7,4 @@
 `disjset.c` - Disjoint Sets (Island counter)<br>
 `dict.c` - Dictionary or Hash Table<br>
 `bst.c` - Binary Search Tree<br>
+`avl.c` - AVL Tree<br>

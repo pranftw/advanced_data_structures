@@ -253,6 +253,9 @@ int main(){
     root = insert(root,6);
     root = insert(root,5);
     root = insert(root,4);
+    root = insert(root,7);
+    root = delete(root,4);
     print_avl(root);
+    printf("\n%d\n",root->left->data);
     return 0;
 }
