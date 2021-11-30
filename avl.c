@@ -53,13 +53,21 @@ node* rotate_right(node* root, node* node_ptr){
     node* x = node_ptr->left;
     // node* a = x->left; node* c = y->right;
     node* b = x->right;
+    if(y->parent!=NULL){
+        if(y->parent->right==y){ // I'd forgotten about this part where just changing the child's parent was taken care, but the parent's child wasn't set at all!!!
+            y->parent->right = x;
+        }
+        else{
+            y->parent->left = x;
+        }
+    }
     x->parent = y->parent;
     x->right = y;
     y->parent = x;
-		y->left = b;
-		if(b!=NULL){
-    	b->parent = y;
-		}
+    y->left = b;
+    if(b!=NULL){
+        b->parent = y;
+    }
     if(x->parent==NULL){
         return x;
     }
@@ -71,13 +79,21 @@ node* rotate_left(node* root, node* node_ptr){
     node* y = x->right;
     // node* a = x->left; node* c = y->right;
     node* b = y->left;
+    if(x->parent!=NULL){
+        if(x->parent->right==x){ // I'd forgotten about this part where just changing the child's parent was taken care, but the parent's child wasn't set at all!!!
+            x->parent->right = y;
+        }
+        else{
+            x->parent->left = y;
+        }
+    }
     y->parent = x->parent;
     y->left = x;
     x->parent = y;
-		x->right = b;
-		if(b!=NULL){
-    	b->parent = x;
-		}
+    x->right = b;
+    if(b!=NULL){
+        b->parent = x;
+    }
     if(y->parent==NULL){
         return y;
     }
@@ -86,7 +102,9 @@ node* rotate_left(node* root, node* node_ptr){
 
 node* balance(node* root, node* node_ptr){
     node* ptr = node_ptr;
-    while(ptr!=NULL){ // Keeps balancing until the parent is null(root)
+    node* temp;
+    while(ptr!=NULL){
+        temp = ptr->parent;
         if(diff(ptr)<0 && diff(ptr->left)<0){ // Both are left heavy
             root = rotate_right(root,ptr);
         }
@@ -101,7 +119,7 @@ node* balance(node* root, node* node_ptr){
             root = rotate_right(root,ptr->right);
             root = rotate_left(root,ptr);
         }
-        ptr = ptr->parent;
+        ptr = temp;
     }
     return root;
 }
@@ -233,6 +251,8 @@ int main(){
     root = insert(root,8);
     root = insert(root,15);
     root = insert(root,6);
+    root = insert(root,5);
+    root = insert(root,4);
     print_avl(root);
     return 0;
 }
