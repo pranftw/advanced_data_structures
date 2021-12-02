@@ -223,7 +223,7 @@ node* delete(node* root, int data){
                 ptr->data = min_val->data;
                 root = delete(root,min_val->data);
             }
-            root = balance(root,ptr->parent);
+            root = balance(root,ptr);
             return root;
         }
         else if(data>ptr->data){
