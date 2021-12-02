@@ -123,7 +123,7 @@ node* balance(node* root, node* node_ptr){
             }
             else{ // One child is red and another is black
                 // Only balance is required in this case
-                ptrs_gp->color = 1 // True in every case
+                ptrs_gp->color = 1 // True in every case, there is no need to check if its parent is null, because after rotation it will be a child
                 if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)<0){ // Both are left heavy
                     ptr->parent->color = 0;
                     root = rotate_right(root,ptrs_gp);
