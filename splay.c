@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Changed tab size
+
 struct node{
 	int data;
 	struct node* parent;
