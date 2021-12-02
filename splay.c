@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Changed tab size again
-
 struct node{
 	int data;
 	struct node* parent;
@@ -51,11 +49,13 @@ node* rotate_right(node* root, node* node_ptr){
 	node* x = y->left;
 	node* b = x->right;
 	x->parent = y->parent;
-	if(y->parent->right==y){
-		y->parent->right = x;
-	}
-	else{
-		y->parent->left = x;
+	if(y->parent!=NULL){
+		if(y->parent->right==y){
+			y->parent->right = x;
+		}
+		else{
+			y->parent->left = x;
+		}
 	}
 	x->right = y;
 	y->parent = x;
@@ -74,11 +74,13 @@ node* rotate_left(node* root, node* node_ptr){
 	node* y = x->right;
 	node* b = y->left;
 	y->parent = x->parent;
-	if(x->parent->right==x){
-		x->parent->right = y;
-	}
-	else{
-		x->parent->left = y;
+	if(x->parent!=NULL){
+		if(x->parent->right==x){
+			x->parent->right = y;
+		}
+		else{
+			x->parent->left = y;
+		}
 	}
 	y->left = x;
 	x->parent = y;
@@ -114,6 +116,7 @@ node* balance(node* root, node* node_ptr){
 node* splay(node* root, node* node_ptr){
 	node* ptr = node_ptr;
 	while(ptr->parent!=NULL){
+		printf("%d ",ptr->data);
 		if(ptr->parent->left==ptr){
 			root = rotate_right(root,ptr->parent);
 		}
@@ -129,6 +132,7 @@ node* search(node* root, int data){
 	while(ptr!=NULL){
 		if(ptr->data==data){
 			root = splay(root,ptr);
+			break;
 		}
 		else if(data>ptr->data){
 			ptr = ptr->right;
@@ -138,10 +142,10 @@ node* search(node* root, int data){
 		}
 	}
 	if(ptr!=NULL){
-		printf("It is present.\n")
+		printf("\nIt is present.\n");
 	}
 	else{
-		printf("It is not present.\n")
+		printf("\nIt is not present.\n");
 	}
 	return root;
 }
@@ -153,6 +157,7 @@ node* insert_bst(node* root, node* x){
 			if(ptr->right==NULL){
 				ptr->right = x;
 				x->parent = ptr;
+				break;
 			}
 			else{
 				ptr = ptr->right;
@@ -162,6 +167,7 @@ node* insert_bst(node* root, node* x){
 			if(ptr->left==NULL){
 				ptr->left = x;
 				x->parent = ptr;
+				break;
 			}
 			else{
 				ptr = ptr->left;
@@ -230,8 +236,8 @@ node* delete(node* root, int data){
 			}	
 			else{
 				node* min_val = find_min(ptr->right);
+				root = delete(root,min_val->data);
 				ptr->data = min_val->data;
-				root = delete(root,min_val);
 			}
 			root = balance(root,ptr);
 			return root;
@@ -243,6 +249,7 @@ node* delete(node* root, int data){
 			ptr = ptr->left;
 		}
 	}
+	return root;
 }
 
 void print_splay(node* root){
@@ -254,5 +261,17 @@ void print_splay(node* root){
 }
 
 int main(){
+	node* root = NULL;
+	root = insert(root,10);
+	root = insert(root,20);
+	root = insert(root,5);
+	root = insert(root,4);
+	root = insert(root,6);
+	print_splay(root);
+	root = delete(root,5);
+	printf("\n");
+	print_splay(root);
+	root = search(root,20);
+	printf("\n%d\n",root->data);
 	return 0;
 }

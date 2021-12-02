@@ -220,8 +220,8 @@ node* delete(node* root, int data){
             }
             else{
                 node* min_val = find_min(ptr->right);
-                ptr->data = min_val->data;
                 root = delete(root,min_val->data);
+                ptr->data = min_val->data;
             }
             root = balance(root,ptr);
             return root;
