@@ -102,26 +102,27 @@ node* rotate_left(node* root, node* node_ptr){
 
 node* balance(node* root, node* node_ptr){
     node* ptr = node_ptr;
+    node* root_ptr = root;
     node* temp;
     while(ptr!=NULL){
         temp = ptr->parent;
         if(diff(ptr)<0 && diff(ptr->left)<0){ // Both are left heavy
-            root = rotate_right(root,ptr);
+            root_ptr = rotate_right(root_ptr,ptr);
         }
         else if(diff(ptr)>0 && diff(ptr->right)>0){ // Both are right heavy
-            root = rotate_left(root,ptr);
+            root_ptr = rotate_left(root_ptr,ptr);
         }
         else if(diff(ptr)<0 && diff(ptr->left)>0){ // One is left heavy and other is right heavy
-            root = rotate_left(root,ptr->left);
-            root = rotate_right(root,ptr);
+            root_ptr = rotate_left(root_ptr,ptr->left);
+            root_ptr = rotate_right(root_ptr,ptr);
         }
         else if(diff(ptr)>0 && diff(ptr->right)<0){ // One is right heavy and other is left heavy
-            root = rotate_right(root,ptr->right);
-            root = rotate_left(root,ptr);
+            root_ptr = rotate_right(root_ptr,ptr->right);
+            root_ptr = rotate_left(root_ptr,ptr);
         }
         ptr = temp;
     }
-    return root;
+    return root_ptr;
 }
 
 node* insert_bst(node* root, node* x){
@@ -247,15 +248,18 @@ void print_avl(node* root){
 
 int main(){
     node* root = NULL;
-    root = insert(root,10);
-    root = insert(root,8);
-    root = insert(root,15);
+    // root = insert(root,10);
+    // root = insert(root,8);
+    // root = insert(root,15);
+    // root = insert(root,6);
+    // root = insert(root,5);
+    // root = insert(root,4);
+    // root = insert(root,7);
+    // root = delete(root,4);
     root = insert(root,6);
-    root = insert(root,5);
     root = insert(root,4);
-    root = insert(root,7);
-    root = delete(root,4);
+    root = insert(root,5);
     print_avl(root);
-    printf("\n%d\n",root->left->data);
+    printf("\n%d\n",root->data);
     return 0;
 }

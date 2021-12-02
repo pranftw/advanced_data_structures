@@ -9,12 +9,12 @@ struct node{
     struct node* right;
     struct node* parent;
     int color; // Red 1 Black 0
-}
+};
 
 typedef struct node node;
 
 node* new_node(){
-    node* x = (node*)malloc(sizeof(struct));
+    node* x = (node*)malloc(sizeof(node));
     x->right = NULL;
     x->left = NULL;
     x->color = 1;
@@ -128,26 +128,27 @@ node* balance(node* root, node* node_ptr){
             ptrs_gp->color = 1;
             ptr->parent->color = 0;
             // Only balance is required in this case
-            node* temp;
-            while(ptr!=NULL){
-                temp = ptr->parent;
-                if(diff(ptr)<0 && diff(ptr->left)<0){ // Both are left heavy
-                    root = rotate_right(ptr);
-                }
-                else if(diff(ptr)>0 && diff(ptr->right)>0){ // Both are right heavy
-                    root = rotate_left(ptr);
-                }
-                else if(diff(ptr)<0 && diff(ptr->left)>0){ // One is left heavy and other is right heavy
-                    root = rotate_left(ptr->left);
-                    root = rotate_right(ptr);
-                }
-                else if(diff(ptr)>0 && diff(ptr->right)<0){ // One is right heavy and other is left heavy
-                    root = rotate_right(ptr->right);
-                    root = rotate_left(ptr);
-                }
-                ptr = temp;
+            if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)<0){ // Both are left heavy
+                root = rotate_right(root,ptrs_gp);
+            }
+            else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)>0){ // Both are right heavy
+                root = rotate_left(root,ptrs_gp);
+            }
+            else if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)>0){ // One is left heavy and other is right heavy
+                root = rotate_left(root,ptrs_gp->left);
+                root = rotate_right(root,ptrs_gp);
+            }
+            else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)<0){ // One is right heavy and other is left heavy
+                root = rotate_right(root,ptrs_gp->right);
+                root = rotate_left(root,ptrs_gp);
+            }
+            if(get_color(ptr->parent)==1 && get_color(ptrs_gp)==1){
+                root = balance(root,ptrs_gp);        
             }
         }
+    }
+    if(get_color(ptrs_gp)==1 && get_color(ptrs_gp->parent)==1){
+        root = balance(root,ptrs_gp);
     }
     return root;
 }
@@ -246,7 +247,7 @@ node* delete(node* root, int data){
                 root = delete(root,min_val->data);
                 ptr->data = min_val->data;
             }
-            root = balance(ptr);
+            root = balance(root,ptr);
             return root;
         }
         else if(data>ptr->data){
@@ -259,7 +260,26 @@ node* delete(node* root, int data){
     return root;
 }
 
+void print_redblack(node* root){
+    if(root!=NULL){
+        print_redblack(root->left);
+        printf("%d ",root->data);
+        print_redblack(root->right);
+    }
+}
+
 int main(){
     node* root = NULL;
+    root = insert(root,10);
+    root = insert(root,8);
+    root = insert(root,6);
+    root = insert(root,3);
+    root = insert(root,2);
+    root = insert(root,4);
+    root = insert(root,5);
+    root = insert(root,7);
+    print_redblack(root);
+    printf("\n");
+    printf("%d\n",root->data);
     return 0;
 }
