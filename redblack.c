@@ -106,49 +106,48 @@ node* rotate_left(node* root, node* node_ptr){
 }
 
 node* balance(node* root, node* node_ptr){
-    // TODO: Recoloring to be done
     node* ptr = node_ptr;
+    node* temp;
     // Balance required if ptr's grandparent has one red and one black child, but recoloring required
     // Balance not required when ptr's grandparent has two red children, but recoloring required
-    // Balance not required when ptr's parent is black. no recoloring
-    // balance not required when ptr->parent is null, no recoloring
-    if(ptr->parent==NULL || ptr->parent->color==0){
-        return root;
-    }
-    node* ptrs_gp = ptr->parent->parent;
-    if(ptrs_gp!=NULL){
-        if(get_color(ptrs_gp->left) + get_color(ptrs_gp->right)==2){ // Both are red
-            ptrs_gp->right->color = 0;
-            ptrs_gp->left->color = 0;
-            if(ptrs_gp->parent!=NULL){
-                ptrs_gp->color = 1;
+    while(get_color(ptr)==1 && get_color(ptr->parent)==1){ // Only balance if both ptr and its parent are red
+        node* ptrs_gp = ptr->parent->parent;
+        if(ptrs_gp!=NULL){
+            if(get_color(ptrs_gp->left) + get_color(ptrs_gp->right)==2){ // Both are red
+                ptrs_gp->right->color = 0;
+                ptrs_gp->left->color = 0;
+                if(ptrs_gp->parent!=NULL){
+                    ptrs_gp->color = 1;
+                    ptr = ptrs_gp; // Here next ptr will be ptrs grandparent as it got recolored to red
+                }
+            }
+            else{ // One child is red and another is black
+                // Only balance is required in this case
+                ptrs_gp->color = 1 // True in every case
+                if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)<0){ // Both are left heavy
+                    ptr->parent->color = 0;
+                    root = rotate_right(root,ptrs_gp);
+                    ptr = ptr->parent; // Here in these two cases, ptr's parent will be next ptr as after rotation, they become the root of the subtree
+                }
+                else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)>0){ // Both are right heavy
+                    ptr->parent->color = 0;
+                    root = rotate_left(root,ptrs_gp);
+                    ptr = ptr->parent; // Here in these two cases, ptr's parent will be next ptr as after rotation, they become the root of the subtree
+                }
+                else if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)>0){ // One is left heavy and other is right heavy
+                    // Here in these two cases, the ptr itself becomes the new root after both the rotations
+                    ptr->color = 0;
+                    root = rotate_left(root,ptrs_gp->left);
+                    root = rotate_right(root,ptrs_gp);
+                }
+                else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)<0){ // One is right heavy and other is left heavy
+                    // Here in these two cases, the ptr itself becomes the new root after both the rotations
+                    ptr->color = 0;
+                    root = rotate_right(root,ptrs_gp->right);
+                    root = rotate_left(root,ptrs_gp);
+                }
             }
         }
-        else{ // One child is red and another is black
-            ptrs_gp->color = 1;
-            ptr->parent->color = 0;
-            // Only balance is required in this case
-            if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)<0){ // Both are left heavy
-                root = rotate_right(root,ptrs_gp);
-            }
-            else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)>0){ // Both are right heavy
-                root = rotate_left(root,ptrs_gp);
-            }
-            else if(diff(ptrs_gp)<0 && diff(ptrs_gp->left)>0){ // One is left heavy and other is right heavy
-                root = rotate_left(root,ptrs_gp->left);
-                root = rotate_right(root,ptrs_gp);
-            }
-            else if(diff(ptrs_gp)>0 && diff(ptrs_gp->right)<0){ // One is right heavy and other is left heavy
-                root = rotate_right(root,ptrs_gp->right);
-                root = rotate_left(root,ptrs_gp);
-            }
-            if(get_color(ptr->parent)==1 && get_color(ptrs_gp)==1){
-                root = balance(root,ptrs_gp);        
-            }
-        }
-    }
-    if(get_color(ptrs_gp)==1 && get_color(ptrs_gp->parent)==1){
-        root = balance(root,ptrs_gp);
     }
     return root;
 }
